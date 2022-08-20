@@ -1,5 +1,5 @@
 {
-  "name": "hh-boilerplate",
+  "name": "hh-nft-marketplace",
   "devDependencies": {
     "@chainlink/contracts": "^0.4.2",
     "@ethersproject/abi": "^5.4.7",
