@@ -47,6 +47,16 @@ import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs"
             )
             .withArgs(basicNft.address, TOKEN_ID, deployerAdderss)
         })
+
+        it("revert when list price below or equal zero", async function () {
+          await expect(
+            nftMarketplace.listItem(basicNft.address, TOKEN_ID, 0)
+          ).to.be.revertedWithCustomError(
+            nftMarketplaceContract,
+            "NftMarketplace__PriceLessThanZero"
+          )
+        })
+
         it("exclusively allows owners to list", async function () {
           nftMarketplace = nftMarketplaceContract.connect(user)
           await basicNft.approve(await user.getAddress(), TOKEN_ID)
@@ -83,7 +93,7 @@ import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs"
               nftMarketplaceContract,
               "NftMarketplace__NftNotList"
             )
-            .withArgs(basicNft.address, anyValue)
+            // .withArgs(basicNft.address, anyValue)
             .withArgs(basicNft.address, TOKEN_ID)
         })
         it("reverts if anyone but the owner tries to call", async function () {
@@ -160,6 +170,17 @@ import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs"
             "NftMarketplace__NotOwnerOfNft"
           )
         })
+
+        it("revert when list price below or equal zero", async function () {
+          await nftMarketplace.listItem(basicNft.address, TOKEN_ID, PRICE)
+          await expect(
+            nftMarketplace.updateListing(basicNft.address, TOKEN_ID, 0)
+          ).to.be.revertedWithCustomError(
+            nftMarketplaceContract,
+            "NftMarketplace__PriceLessThanZero"
+          )
+        })
+
         it("updates the price of the item", async function () {
           const updatedPrice = ethers.utils.parseEther("0.2")
           await nftMarketplace.listItem(basicNft.address, TOKEN_ID, PRICE)
