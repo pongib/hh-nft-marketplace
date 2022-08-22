@@ -19,6 +19,8 @@ error NftMarketplace__NotEnoughEthToBuy(
     uint256 tokenId,
     uint256 listPrice
 );
+error NftMarketplace__SellerFundNotEnough();
+error NftMarketplace__TransferFundFail();
 
 contract NftMarketplace is ReentrancyGuard {
     /*
@@ -55,6 +57,8 @@ contract NftMarketplace is ReentrancyGuard {
         address indexed nftAddress,
         uint256 indexed tokenId
     );
+
+    event WithdrawSellerFund(address indexed seller, uint256 amount);
 
     // modifier
     modifier notListed(
@@ -154,5 +158,47 @@ contract NftMarketplace is ReentrancyGuard {
     {
         delete s_listings[nftAddress][tokenId];
         emit ItemCanceled(msg.sender, nftAddress, tokenId);
+    }
+
+    function updateListing(
+        address nftAddress,
+        uint256 tokenId,
+        uint256 newPrice
+    )
+        external
+        isOwner(nftAddress, tokenId, msg.sender)
+        isListed(nftAddress, tokenId)
+    {
+        if (newPrice <= 0) {
+            revert NftMarketplace__PriceLessThanZero();
+        }
+        s_listings[nftAddress][tokenId].price = newPrice;
+        // use same event as list new nft.
+        emit ItemListed(msg.sender, nftAddress, tokenId, newPrice);
+    }
+
+    function withdrawSellerFund() external {
+        uint256 amount = s_sellerFunds[msg.sender];
+        if (amount <= 0) {
+            revert NftMarketplace__SellerFundNotEnough();
+        }
+        (bool success, ) = address(msg.sender).call{value: amount}("");
+        if (!success) {
+            revert NftMarketplace__TransferFundFail();
+        }
+        emit WithdrawSellerFund(msg.sender, amount);
+    }
+
+    // getter function
+    function getListing(address nftAddress, uint256 tokenId)
+        external
+        view
+        returns (Listing memory)
+    {
+        return s_listings[nftAddress][tokenId];
+    }
+
+    function getSellerFund() external view returns (uint256) {
+        return s_sellerFunds[msg.sender];
     }
 }
