@@ -118,7 +118,7 @@ contract NftMarketplace is ReentrancyGuard {
         }
 
         IERC721 nft = IERC721(nftAddress);
-        if (nft.getApproved(tokenId) == address(this)) {
+        if (nft.getApproved(tokenId) != address(this)) {
             revert NftMarketplace__NotApprovForMarketplace();
         }
 
@@ -198,7 +198,7 @@ contract NftMarketplace is ReentrancyGuard {
         return s_listings[nftAddress][tokenId];
     }
 
-    function getSellerFund() external view returns (uint256) {
-        return s_sellerFunds[msg.sender];
+    function getSellerFund(address seller) external view returns (uint256) {
+        return s_sellerFunds[seller];
     }
 }
