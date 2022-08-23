@@ -58,5 +58,10 @@ export const DECIMALS = "18"
 export const INITIAL_PRICE = "200000000000000000000"
 
 export const frontEndAbiFile = "../next-lottery/constants/abi.json"
+
 export const frontEndContractsFile =
-  "../next-lottery/constants/contractAddress.json"
+  "../nft-marketplace-moralis/constants/networkMapping.json"
+export const frontEndContractsFile2 =
+  "../nft-marketplace-thegraph/constants/networkMapping.json"
+export const frontEndAbiLocation = "../nft-marketplace-moralis/constants/"
+export const frontEndAbiLocation2 = "../nft-marketplace-thegraph/constants/"
