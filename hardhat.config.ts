@@ -25,6 +25,9 @@ const config: HardhatUserConfig = {
       accounts: [PRIVATE_KEY],
       chainId: 4,
     },
+    localhost: {
+      chainId: 31337,
+    },
   },
   gasReporter: {
     enabled: false,
