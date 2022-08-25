@@ -182,6 +182,7 @@ contract NftMarketplace is ReentrancyGuard {
         if (amount <= 0) {
             revert NftMarketplace__SellerFundNotEnough();
         }
+        s_sellerFunds[msg.sender] = 0;
         (bool success, ) = address(msg.sender).call{value: amount}("");
         if (!success) {
             revert NftMarketplace__TransferFundFail();
